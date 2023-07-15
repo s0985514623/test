@@ -1,42 +1,64 @@
-import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Button, Select, Image, Typography, Space } from "antd";
-import { getPosts } from '../../index.js'
-
-
-
+import UpdatePost from "../../api/UpdatePost";
+const { Paragraph } = Typography;
 
 const PostContent = (props) => {
+  const [loading, setLoading] = useState(false);
+  //上一頁
+  const navigate = useNavigate();
 
-    //上一頁
-    const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(-1);
+  };
 
-    const handleClick = () => {
-        navigate(-1);
-    }
+  const { state } = useLocation();
+  console.log("state", state);
 
-    const location = useLocation();
-    // 獲取postId
-    const searchParams = new URLSearchParams(location.search);
-    const postId = searchParams.get('postID');
-    const postObj = getPosts.find((getPosts) => getPosts.id === postId);
-    const { src, title, description } = postObj;
+  const src =
+    state?.src || "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png";
+  const title = state?.title || "";
+  const description = state?.description || "";
 
-    return (
-        <Space direction="vertical" style={{ width: '100%' }} size='large'>
-            <Button type="default" onClick={handleClick}>回上一頁</Button>
-            <Image
-                width={500}
-                src={src}
-            />
-            <Typography.Title level={1} style={{ margin: 0 }}>
-                {title}
-            </Typography.Title>
-            <Typography.Title level={2} style={{ margin: 0 }}>
-                {description}
-            </Typography.Title>
-        </Space>
-    )
+  const [eitTitle, setEitTitle] = useState(title);
+  const [eitDescription, setEitDescription] = useState(description);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  return (
+    <Space direction="vertical" style={{ width: "100%" }} size="large">
+      <Button type="default" onClick={handleClick}>
+        回上一頁
+      </Button>
+      <Image width={500} src={src} />
+      <Paragraph
+        editable={{
+          onChange: setEitTitle,
+        }}
+        level={1}
+        style={{ margin: 0 }}
+      >
+        {eitTitle}
+      </Paragraph>
+      <Paragraph
+        editable={{
+          onChange: setEitDescription,
+        }}
+        level={2}
+        style={{ margin: 0 }}
+      >
+        {eitDescription}
+      </Paragraph>
+      <UpdatePost
+        id={state.id}
+        title={eitTitle}
+        content={eitDescription}
+        setLoading={setLoading}
+      />
+    </Space>
+  );
 };
 
 export default PostContent;

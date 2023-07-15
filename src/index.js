@@ -1,22 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import ListRow from './components/ListRow';
-import PostSPA from './pages/PostContent';
-import Store from './pages/Store';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-export const getPosts = [
-  {id:'1',src:'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',title:'Europe Street beat',description:'www.instagram.com'},
-  {id:'2',src:'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',title:'Europe Street beat 2',description:'www.instagram.com'},
-  {id:'3',src:'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',title:'Europe Street beat 3',description:'www.instagram.com'},
-  {id:'4',src:'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',title:'Europe Street beat 4',description:'www.instagram.com'},
-]
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import ListRow from "./components/ListRow";
+import PostSPA from "./pages/PostContent";
+import Store from "./pages/Store";
+import PostList from "./pages/PostList";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
@@ -25,10 +16,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <ListRow />,
+        element: <PostList />,
       },
       {
-        path: "/post",
+        path: "/post/:id",
         element: <PostSPA />,
       },
       {
@@ -39,9 +30,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
