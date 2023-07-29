@@ -1,51 +1,38 @@
 import React, { useState, useCallback, useEffect } from "react";
 import ListRow from "../../components/ListRow";
-import CreatePost from "../../api/CreatePost.jsx";
+import CreatePostBtn from "../../components/CreatePostBtn";
 import fetchData from "../../api/";
+import { useQuery, useIsMutating } from "react-query";
 
 const Index = () => {
-  const [extractedData, setExtractedData] = useState([]);
-  const [Loading, setLoading] = useState(true);
+  //取得當前是否有任何一個 useMutation 請求正在進行中
+  const isMutating = useIsMutating();
 
   //Get Post API
-  const fetchDataAndSetData = async () => {
-    try {
-      const data = await fetchData();
-      setExtractedData(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { data, isFetching, isError, error } = fetchData();
 
-  //Create Post API useState
-  const onCreatePost = (newPost) => {
-    setExtractedData([...extractedData, newPost]);
-  };
-  const onDeletePost = (deletePost) => {
-    setExtractedData(deletePost);
-  };
-
-  useEffect(() => {
-    fetchDataAndSetData();
-  }, []);
-
-  if (Loading) {
-    return <div>Loading...</div>;
+  //當有 useMutation 請求正在進行中時
+  if (isMutating) {
+    return <div>MutatingLoading...</div>;
   }
+
+  if (isFetching) {
+    return <div>fetchDataLoading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+  // 為什麼不能將date set進一個useState裡面?
+  // const [extractedData, setExtractedData] = useState([]);
+  // console.log(data);
+  // setExtractedData(data); //
+  // console.log(extractedData); //=> 重複執行好多次
 
   return (
     <>
-      <ListRow
-        extractedData={extractedData}
-        setLoading={setLoading}
-        onDeletePost={onDeletePost}
-      />
-      <CreatePost
-        fetchDataAndSetData={fetchDataAndSetData}
-        onCreatePost={onCreatePost}
-        setLoading={setLoading}
-      />
+      <ListRow postData={data} />
+      <CreatePostBtn />
     </>
   );
 };

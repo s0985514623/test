@@ -1,7 +1,19 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { Space, Layout } from "antd";
-import CreatePost from "./api/CreatePost.jsx";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // true
+      retry: false, // true
+      cacheTime: 0, // 只要QUERYKEY一樣  會優先給你看快取
+      staleTime: 0, // 只要QUERYKEY一樣   時間內都不會去打API
+    },
+  },
+});
 
 const App = () => {
   const { Header, Footer, Content } = Layout;
@@ -31,15 +43,18 @@ const App = () => {
 
   return (
     <>
-      <Space direction="vertical" style={{ width: "100%" }}>
-        <Layout>
-          <Header style={headerStyle}>List</Header>
-          <Content style={contentStyle}>
-            <Outlet />
-          </Content>
-          <Footer style={footerStyle}>Footer</Footer>
-        </Layout>
-      </Space>
+      <QueryClientProvider client={queryClient}>
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Layout>
+            <Header style={headerStyle}>List</Header>
+            <Content style={contentStyle}>
+              <Outlet />
+            </Content>
+            <Footer style={footerStyle}>Footer</Footer>
+          </Layout>
+        </Space>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </>
   );
 };

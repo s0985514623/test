@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Button, Select, Image, Typography, Space } from "antd";
-import UpdatePost from "../../api/UpdatePost";
+import UpdatePost from "../../components/UpdatePostBtn";
+import { useIsMutating } from "react-query";
+
 const { Paragraph } = Typography;
 
 const PostContent = (props) => {
+  const isMutating = useIsMutating();
   const [loading, setLoading] = useState(false);
   //上一頁
   const navigate = useNavigate();
@@ -27,6 +30,11 @@ const PostContent = (props) => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  // //當有 useMutation 請求正在進行中時
+  // if (isMutating) {
+  //   return <div>MutatingLoading...</div>;
+  // }
   return (
     <Space direction="vertical" style={{ width: "100%" }} size="large">
       <Button type="default" onClick={handleClick}>
